@@ -20,12 +20,15 @@
 @implementation PhotosViewController
 
 - (void)onRefresh {
-    NSURL *url = [NSURL URLWithString:@"..."];
+    NSURL *url = [NSURL URLWithString:@"https://api.instagram.com/v1/media/popular?client_id=3581125fb68441e8967a2a20b17aec4d"];
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-        
-        [self.refreshControl endRefreshing];
+        NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        self.media = responseDictionary[@"data"];
         [self.tableView reloadData];
+
+        [self.refreshControl endRefreshing];
+
     }];
 }
 
